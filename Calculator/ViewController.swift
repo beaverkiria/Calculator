@@ -29,8 +29,8 @@ class ViewController: UIViewController {
     
     @IBAction func digitPressed(sender: UIButton) {
         if !isUserTypingNow {
-            displayText = sender.currentTitle!
-            if displayText == "." {
+            display.text = sender.currentTitle!
+            if display.text! == "." {
                 wasDotTyped = true
             }
             
@@ -45,12 +45,12 @@ class ViewController: UIViewController {
                 }
             }
             
-            displayText += sender.currentTitle!
+            display.text! += sender.currentTitle!
         }
     }
     
     func clearDisplay() {
-        displayText = emptyDisplay
+        displayValue = 0
         isUserTypingNow = false
         wasDotTyped = false
     }
@@ -59,42 +59,33 @@ class ViewController: UIViewController {
         clearDisplay()
     }
     
-    var displayText: String {
-        get {
-            return display!.text!
-        }
-        
-        set {
-            display!.text = newValue
-        }
-    }
-    
     var displayValue: Double? {
         get {
-            return NSNumberFormatter().numberFromString(displayText)?.doubleValue
+            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
         }
         
         set {
-            if let newValue = newValue {
-                displayText = "\(newValue)"
+            if let value = newValue {
+                display.text = "\(newValue)"
             } else {
-                displayText = "nil"
+                display.text = "0"
             }
         }
         
     }
     
     @IBAction func enterPressed(sender: UIButton) {
-        if let operand = displayValue {
-            evaluator.putNumber(operand)
+        if let result = evaluator.putOperand(displayValue!) {
+            displayValue = result
+        } else {
+            clearDisplay()
         }
-        clearDisplay()
     }
     
     @IBAction func operatorPressed(sender: UIButton) {
         if isUserTypingNow {
             if let operand = displayValue {
-                evaluator.putNumber(operand)
+//                evaluator.putNumber(operand)
             }
         }
         clearDisplay()

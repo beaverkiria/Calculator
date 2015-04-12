@@ -44,19 +44,21 @@ class Evaluator {
         learnOp(Op.UnaryOperator("√", sqrt))
     }
     
-    func putNumber(operand: Double) {
+    func putOperand(operand: Double) -> Double? {
         opStack.append(Op.Operand(operand))
+        return evaluate()
     }
     
-    func putOpearator(operatorToPut: String) {
+    func putOpearator(operatorToPut: String) -> Double? {
         if let op = knownOps[operatorToPut] {
             opStack.append(op)
         }
+        return evaluate()
     }
     
-    private func evaluate(ops: [Op]) -> (result: Double, remainingOps: [Op])? {
+    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
         if ops.isEmpty {
-            return nil
+            return (nil, ops)
         }
         
         var remainingOps = ops
@@ -66,23 +68,26 @@ class Evaluator {
             return (operand, remainingOps)
             
         case .UnaryOperator(_, let op):
-            if let result = evaluate(remainingOps) {
-                return (op(result.result), result.remainingOps)
+            let evaluationResult = evaluate(remainingOps)
+            if let result = evaluationResult.result {
+                return (op(result), evaluationResult.remainingOps)
             }
         case .BynaryOperator(_, let op):
-            if let result1 = evaluate(remainingOps) {
-                if let result2 = evaluate(result1.remainingOps) {
-                    return (op(result1.result, result2.result), result2.remainingOps)
+            let evaluationResult1 = evaluate(remainingOps)
+            if let result1 = evaluationResult1.result {
+                let evaluationResult2 = evaluate(evaluationResult1.remainingOps)
+                if let result2 = evaluationResult2.result {
+                    return (op(result1, result2), evaluationResult2.remainingOps)
                 }
             }
-         
         }
-        return nil
+        return (nil, ops)
     }
     
     func evaluate() -> Double? {
-        if let result = evaluate(opStack) {
-            return result.result
+        let result = evaluate(opStack)
+        if let evaluationResult = result.result {
+            return evaluationResult
         }
         return nil
     }
