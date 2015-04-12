@@ -15,12 +15,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
     
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
     var isUserTypingNow = false
     var wasDotTyped = false
     let emptyDisplay = "0"
@@ -92,11 +86,6 @@ class ViewController: UIViewController {
         
         evaluator.putOpearator(sender.currentTitle!)
         displayValue = evaluator.evaluate()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     
