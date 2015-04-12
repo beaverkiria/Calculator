@@ -79,17 +79,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction func operatorPressed(sender: UIButton) {
-        if isUserTypingNow {
-            enterPressed()
-            if let operand = sender.currentTitle {
-                displayValue = evaluator.putOpearator(operand)
-
-            }
-        }
-        clearDisplay()
-        
-        evaluator.putOpearator(sender.currentTitle!)
-        displayValue = evaluator.evaluate()
+        enterPressed()
+        if let operand = sender.currentTitle {
+            displayValue = evaluator.putOpearator(operand)
+            
+        } else {
+            clearDisplay()
+        }        
     }
     
     
