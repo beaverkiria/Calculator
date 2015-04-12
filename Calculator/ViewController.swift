@@ -60,7 +60,7 @@ class ViewController: UIViewController {
         
         set {
             if let value = newValue {
-                display.text = "\(newValue)"
+                display.text = "\(value)"
             } else {
                 display.text = "0"
             }
@@ -68,18 +68,22 @@ class ViewController: UIViewController {
         
     }
     
-    @IBAction func enterPressed(sender: UIButton) {
+    @IBAction func enterPressed() {
         if let result = evaluator.putOperand(displayValue!) {
             displayValue = result
-        } else {
-            clearDisplay()
         }
+        isUserTypingNow = false
+        wasDotTyped = false
+        
+
     }
     
     @IBAction func operatorPressed(sender: UIButton) {
         if isUserTypingNow {
-            if let operand = displayValue {
-//                evaluator.putNumber(operand)
+            enterPressed()
+            if let operand = sender.currentTitle {
+                displayValue = evaluator.putOpearator(operand)
+
             }
         }
         clearDisplay()
