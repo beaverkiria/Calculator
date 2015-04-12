@@ -11,6 +11,7 @@ import Foundation
 class Evaluator {
     private enum Op: Printable {
         case Operand(Double)
+        case Constant(String, Double)
         case UnaryOperator(String, Double -> Double)
         case BynaryOperator(String, (Double, Double) -> Double)
         
@@ -24,17 +25,23 @@ class Evaluator {
                     return "\(op)"
                 case .BynaryOperator(let op, _):
                     return "\(op)"
+                case .Constant(let constnat, _):
+                    return constnat
                 }
             }
         }
     }
     
     private var knownOps = [String: Op]()
+    private var knownConstant = [String: Op]()
     private var opStack = [Op]()
     
     init() {
         func learnOp(op: Op) {
             knownOps[op.description] = op
+        }
+        func learnConstant(op: Op) {
+            knownConstant[op.description] = op
         }
         
         learnOp(Op.BynaryOperator("+", +))
@@ -42,6 +49,11 @@ class Evaluator {
         learnOp(Op.BynaryOperator("×", *))
         learnOp(Op.BynaryOperator("÷", {$1 / $0}))
         learnOp(Op.UnaryOperator("√", sqrt))
+        learnOp(Op.UnaryOperator("Sin", sin))
+        learnOp(Op.UnaryOperator("Cos", cos))
+        
+        learnConstant(Op.Constant("π", M_PI))
+        learnConstant(Op.Constant("e", M_E))
     }
     
     func putOperand(operand: Double) -> Double? {
@@ -52,6 +64,13 @@ class Evaluator {
     func putOpearator(operatorToPut: String) -> Double? {
         if let op = knownOps[operatorToPut] {
             opStack.append(op)
+        }
+        return evaluate()
+    }
+    
+    func putConstant(constantToPut: String) -> Double? {
+        if let constant = knownConstant[constantToPut] {
+            opStack.append(constant)
         }
         return evaluate()
     }
@@ -80,6 +99,8 @@ class Evaluator {
                     return (op(result1, result2), evaluationResult2.remainingOps)
                 }
             }
+        case .Constant(_, let constant):
+            return (constant, remainingOps)
         }
         return (nil, ops)
     }

@@ -55,7 +55,7 @@ class ViewController: UIViewController {
     
     var displayValue: Double? {
         get {
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            return NSNumberFormatter().numberFromString(display.text!)?.doubleValue ?? nil
         }
         
         set {
@@ -66,6 +66,15 @@ class ViewController: UIViewController {
             }
         }
         
+    }
+    
+    @IBAction func constantPressed(sender: UIButton) {
+        enterPressed()
+        clearDisplay()
+//        if let constant = sender.currentTitle {
+//            displayValue = evaluator.putConstant(constant)
+//        }
+        display.text! = sender.currentTitle!
     }
     
     @IBAction func enterPressed() {
@@ -80,12 +89,12 @@ class ViewController: UIViewController {
     
     @IBAction func operatorPressed(sender: UIButton) {
         enterPressed()
-        if let operand = sender.currentTitle {
-            displayValue = evaluator.putOpearator(operand)
+        if let op = sender.currentTitle {
+            displayValue = evaluator.putOpearator(op)
             
         } else {
             clearDisplay()
-        }        
+        }
     }
     
     
